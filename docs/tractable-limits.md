@@ -1,95 +1,101 @@
 # 2. Insightful Limits Reveal Fundamental Behavior
 
-> "Appropriate asymptotic perspectives often render otherwise intractable systems analytically tractable."  
->
-> Modern deep learning systems regularly involve hundreds of interacting architectural components comprised of hundreds of billions of parameters trained on trillions of tokens. Constructing microscopic theories that track every individual parameter in such practical setups seems all but hopeless. Fortunately, complex systems often simplify when approximated as effectively infinite in size, revealing simple mathematical structures that remain deeply informative for original finite systems. 
+> "Appropriate asymptotic perspectives often render otherwise intractable systems analytically tractable." 
+> Modern deep learning systems regularly involve hundreds of interacting architectural components comprised of hundreds of billions of parameters trained on trillions of tokens. Constructing microscopic theories that track every individual parameter in such practical setups seems all but hopeless. Fortunately, complex systems often simplify when approximated as effectively infinite in size, revealing simple mathematical structures that remain deeply informative for original finite systems.
+
+## A. The Infinite Width Limit & The Lazy/Rich Dichotomy
+*Focuses on mean-field behaviors when the number of neurons in hidden layers approaches infinity, separating frozen feature kernels from adaptive representation learning.*
+
+* **Neal [1996]** — *Priors for infinite networks* 
+* **Poole et al. [2016]** — *Exponential expressivity in deep neural networks through transient chaos* 
+* **Lecun et al. [1998]** — *Gradient-based learning applied to document recognition* 
+* **Jacot et al. [2018]** — *Neural tangent kernel: Convergence and generalization in neural networks* 
+* **Lee et al. [2019]** — *Wide neural networks of any depth evolve as linear models under gradient descent* 
+* **Chizat et al. [2019]** — *On lazy training in differentiable programming* 
+* **Mei et al. [2019]** — *Mean-field theory of two-layers neural networks: dimension-free bounds and kernel limit* 
+* **Rotskoff & Eric Vanden-Eijnden [2018]** — *Parameters as interacting particles: long time convergence and asymptotic error scaling of neural networks* 
+* **Chizat & Bach [2018]** — *On the global convergence of gradient descent for over-parameterized models using optimal transport* 
+* **Bordelon & Pehlevan [2022]** — *Self-consistent dynamical field theory of kernel evolution in wide neural networks* 
+* **Aubin et al. [2018]** — *The committee machine: Computational to statistical gaps in learning a two-layers neural network* 
+* **Goldt et al. [2019]** — *Dynamics of stochastic gradient descent for two-layer neural networks in the teacher-student setup* 
+* **Ren et al. [2025]** — *Emergence and scaling laws in sgd learning of shallow neural networks* 
+* **Abbe et al. [2022]** — *The merged-staircase property: a necessary and nearly sufficient condition for sgd learning of sparse functions on two-layer neural networks* 
+* **Moniri et al. [2023]** — *A theory of non-linear feature learning with one gradient step in two-layer neural networks* 
+* **Cui et al. [2024]** — *Asymptotics of feature learning in two-layer networks after one gradient-step* 
+* **Defilippis et al. [2025]** — *Scaling laws and spectra of shallow neural networks in the feature learning regime* 
+* **Montanari & Wang [2026]** — *Phase transitions for feature learning in neural networks* 
+* **Saxe [2015]** — *Deep linear neural networks: A theory of learning in the brain and mind* 
+* **Atanasov et al. [2021]** — *Neural networks as kernel learners: The silent alignment effect* 
+* **Atanasov et al. [2025]** — *The optimization landscape of sgd across the feature learning strength* 
+* **Maennel et al. [2018]** — *Gradient descent quantizes relu network features* 
+* **Woodworth et al. [2020]** — *Kernel and rich regimes in overparametrized models* 
+
+### The Bayesian Perspective
+* **Lee et al. [2017]** — *Deep neural networks as gaussian processes* 
+* **Cohen et al. [2021b]** — *Learning curves for overparametrized deep neural networks: A field theory perspective* 
+* **Lavie et al. [2024]** — *Towards understanding inductive bias in transformers: A view from infinity* 
+* **Seroussi et al. [2023]** — *Separation of scales and a thermodynamic description of feature learning in some cnns* 
+* **Rubin et al. [2023]** — *Grokking as a first order phase transition in two layer networks* 
+* **Rubin et al. [2025b]** — *From kernels to features: A multi-scale adaptive theory of feature learning* 
+* **Rubin et al. [2025a]** — *Mitigating the curse of detail: Scaling arguments for feature learning and sample complexity* 
+* **Yang et al. [2023a]** — *A theory of representation learning gives a deep generalisation of kernel methods* 
 
 ---
 
-### 🔬 The Physics Precedent: Thermodynamic Limits
-This strategy of letting system dimensions trend toward infinity is a pillar of statistical and chemical physics. For example, the ideal gas law:
+## B. Special Focus: The Tensor Programs Framework & µP
+*Highlights the structural infinite-width and depth scaling theories that formulate Maximal Update Parameterization, safeguarding zero-shot hyperparameter transfer across massive target coordinates.*
 
-$$PV = nRT$$
-
-is derived strictly in the limit of an infinite number of particles—termed the **thermodynamic limit**—yet it flawlessly describes real parcels of gas of finite volume. In learning mechanics, taking network sizes (width and depth) to infinity serves as the primary mathematical tool for managing neural complexity.
-
----
-
-## 🌌 The Infinite Width Limit & The Lazy/Rich Dichotomy
-
-When the number of neurons in each hidden layer approaches infinity, deep neural networks generally exhibit **mean-field behavior**. Instead of tracking individual parameters, we only need to describe the evolution of the neuron population as a whole (e.g., as a probability distribution). 
-
-However, achieving a stable infinite width limit requires shrinking the initialization scale as width increases to prevent network activations in deeper layers from diverging. The rate at which we suppress these initial weights strongly dictates the resulting training dynamics, dividing infinite-width architectures into two qualitatively distinct limiting behaviors:
-
-### 🛋️ A. The Lazy, Kernel, or Linearized Regime
-Early theoretical explorations strictly evaluated a network's statistics at initialization. They derived that to keep hidden neuron inputs from vanishing or exploding as width increases, the parameter size at initialization must decay as $\text{[width]}^{-1/2}$. This is the well-known *LeCun initialization rule*, derived directly via the central limit theorem.
-
-* **The Mechanism**: When training these infinite-width networks naively, the individual weights and hidden representations change only negligibly. Yet, across the entire network, these infinitesimal updates accumulate to produce substantial changes in the output function.
-* **Mathematical Tractability**: The training dynamics remain entirely linear in the parameters, and the evolution of the target function can be expressed completely in terms of a static **Neural Tangent Kernel (NTK)**. 
-* **The Fatal Flaw**: Because the hidden representations evolve negligibly, **lazy training fails to exhibit feature learning**. Active feature learning requires hidden activations on a given data sample to actively drift from their initialized values, which is forbidden in this limit. Thus, the NTK limit serves as an overly pessimistic benchmark for sample complexity.
-* **Key Literature**: 
-  * *Neal [1996]* — First established infinite-width statistics at initialization as Gaussian Processes.
-  * *Jacot et al. [2018] / Lee et al. [2019]* — Proved wide networks evolve as linear models driven by the NTK under gradient descent.
-  * *Chizat et al. [2019]* — Formally defined the lazy-rich boundary and coined "lazy training".
-
-### 💎 B. The Rich, Active, or Feature-Learning Regime
-To resolve the limitations of lazy training, theorists developed an alternative scaling paradigm capable of driving active feature adaptation.
-
-* **The Mechanism**: By downscaling the final-layer weights by a factor of $\text{[width]}^{-1}$ instead of $\text{-1/2}$ scaling, the network output is driven to uniformly zero at the infinite-width limit initialization. This structural suppression forces the network weights to change significantly more to compensate. The network function can then grow non-trivially, changing by an order-one ($O(1)$) amount upon each gradient step.
-* **Emergent Properties**: Wide networks in this "rich" regime adapt to the underlying data structure, warping the internal geometry of hidden representations over the course of training. Subpopulations of neurons specialize, actively attending to different latent features. In tasks containing low-dimensional subspaces embedded in high-dimensional data, the weight distribution over the first layer evolves to directly amplify the subspace of interest.
-* **Key Literature**: 
-  * *Mei et al. [2019] / Rotskoff & Vanden-Eijnden [2018] / Chizat & Bach [2018]* — Introduced shallow "mean-field networks" incorporating downscaled outputs.
-  * *Geiger et al. [2020] / Yang & Hu [2021]* — Generalized rich limits to arbitrary depths, structuring the foundational **Maximal Update Parameterization ($\mu$P)**.
-
-> 🧱 **The Material Science Analogy**: The lazy vs. rich dichotomy is conceptually identical to **elastic vs. plastic deformation** in materials physics. A material deforms linearly (elastically) in response to a small force, leaving its internal atomic structure unchanged. Under a larger force, it deforms nonlinearly (plastically), permanently reorganizing its internal configuration.
+* **Yang & Hu [2021]** — *Tensor programs iv: Feature learning in infinite-width neural networks* 
+* **Yang & Littwin [2023]** — *Tensor programs ivb: Adaptive optimization in the infinite-width limit* 
+* **Yang et al. [2022]** — *Tensor programs v: Tuning large neural networks via zero-shot hyperparameter transfer* 
+* **Noci et al. [2024]** — *Super consistency of neural network landscapes and learning rate transfer* 
+* **Ghosh et al. [2025]** — *Understanding the mechanisms of fast hyperparameter transfer* 
+* **Hayou [2025]** — *A proof of learning rate transfer under mu p* 
 
 ---
 
-## ⏳ The Infinite Depth Limit & Hyperparameter Limits
+## C. The Infinite Depth Limit & Alternative Structural Directions
+*Focuses on continuous limits where networks approximate Differential Equations, alongside scaling rules tailored for multi-head attention blocks and mixture-of-experts.*
 
-Just as with large width, stable infinite depth limits of deep residual networks are achieved by downscaling the contribution of individual layers so that the aggregate residual stream does not explode. The behavior splits based on the suppression scaling factor:
-
-* **The Neural ODE Limit ($\text{[depth]}^{-1}$ Scaling)**: Suppressing each layer's output contribution by a factor of $\text{[depth]}^{-1}$ causes the residual stream to change smoothly over depth, converging to a continuous-time deterministic system equivalent to **Neural Ordinary Differential Equations**.
-* **The SDE Limit ($\text{[depth]}^{-1/2}$ Scaling)**: Suppressing each layer by a factor of $\text{[depth]}^{-1/2}$ induces a chaotic diffusion effect where the residual stream propagates as if driven by a continuous **Stochastic Differential Equation**.
-
-### Extension to Modern Modalities
-These mean-field size limits are actively being extended past feedforward layers into complex state-of-the-art transformer blocks:
-* **Recurrent Architectures**: Analyzed via infinite limits of recurrent dimensions.
-* **Attention Layers**: Explored along alternative scaling vectors including head count, head size, and sequence context length.
-* **Mixture-of-Experts (MoE)**: Evaluated through asymptotic limits of expert count, expert size, and routing sparsity.
-
----
-
-## 🔁 Joint Scaling Limits
-
-In practical theoretical machine learning, distinct scaling dimensions often do not commute ($\lim_{x \to \infty} \lim_{y \to \infty} \neq \lim_{y \to \infty} \lim_{x \to \infty}$). The limiting behavior depends heavily on maintaining a constant proportional ratio between variables ($\nu_2 / \nu_1$).
-
-Borrowing mathematical machinery from **Random Matrix Theory**, learning mechanics studies **joint scaling limits** where the training dataset size ($N$) and model parameter count ($P$) approach infinity simultaneously, while holding the ratios of input dimension, network width, or data-to-parameters finite. 
-
-$$\lim_{P, N \to \infty} \frac{P}{N} = \text{constant}$$
-
-This joint (data & model size) paradigm is absolutely essential for theoretically characterizing compute-optimal scaling laws and understanding zero-shot hyperparameter transfer phenomena across production scales.
+* **Bordelon et al. [2024b]** — *Infinite limits of multi-head transformer dynamics* 
+* **Lénaïc Chizat [2025]** — *The hidden width of deep resnets: Tight error bounds and phase diagrams* 
+* **Chaintron et al. [2026]** — *Resnets of all shapes and sizes: Convergence of training dynamics in the large-scale limit* 
+* **Ricky TQ Chen et al. [2018]** — *Neural ordinary differential equations* 
+* **Bordelon et al. [2023]** — *Depthwise hyperparameter transfer in residual networks: Dynamics and scaling limit* 
+* **Yang et al. [2023b]** — *Tensor programs vi: Feature learning in infinite-depth neural networks* 
+* **Dey et al. [2025]** — *Don't be lazy: Completep enables compute-efficient deep transformers* 
+* **Clark et al. [2026]** — *Structure, disorder, and dynamics in task-trained recurrent neural circuits* 
+* **Bauer et al. [2026]** — *A unified theory of feature learning in rnns and dnns* 
+* **Hron et al. [2020]** — *Infinite attention: Nngp and ntk for deep attention networks* 
+* **Małaśnicki et al. [2025]** — *µ-parameterization for mixture of experts* 
+* **Jiang et al. [2026]** — *Hyperparameter transfer with mixture-of-expert layers* 
 
 ---
 
-## 🎛️ Optimization Hyperparameter Limits
+## D. Joint Scaling Limits
+*Focuses on high-dimensional random matrix regimes where sample capacity and parameter sizes approach infinity concurrently under controlled scaling fractions.*
 
-Most fundamental numerical optimization settings have an associated continuous asymptotic limit:
-
-| Finite Hyperparameter | Asymptotic Limit | Resulting Limiting System |
-| :--- | :--- | :--- |
-| **Batch Size**  | $\text{Batch Size} \rightarrow \infty$  | **Population Gradient Descent**  |
-| **Learning Rate**  | $\text{Learning Rate } \eta \rightarrow 0$  | **Gradient Flow** (Continuous ODE)  |
-| **Weight Decay & Time**  | $\text{Decay} \to 0^+, \text{Time } t \rightarrow \infty$  | **Loss Convergence followed by Parameter Norm Minimization**  |
+* **Seung et al. [1992]** — *Statistical mechanics of learning from examples* 
+* **Saad & Solla [1995]** — *Exact solution for on-line learning in multilayer neural networks* 
+* **Lenka Zdeborová & Florent Krzakala [2016]** — *Statistical physics of inference: Thresholds and algorithms* 
+* **Qianyi Li & Haim Sompolinsky [2021]** — *Statistical mechanics of deep linear neural networks: The backpropagating kernel renormalization* 
+* **Hoffmann et al. [2022]** — *Training compute-optimal large language models* 
+* **Bordelon & Pehlevan [2025]** — *Deep linear network training dynamics from random initialization: Data, width, depth, and hyperparameter transfer* 
+* **Hayou & Yang [2023]** — *Width and depth limits commute in residual networks* 
 
 ---
 
-## 📐 The Discretization Hypothesis
+## E. The Discretization Hypothesis & Finite-Size Corrections
+*Evaluates the structural boundaries where noisy, finite neural structures drift from continuous infinite reference horizons.*
 
-The widespread leveraging of limits reflects a unifying structural belief within learning mechanics termed the **Discretization Hypothesis**:
-
-> "Most practical neural networks can be properly understood as noisy, finite approximations to models of infinite size." 
-
-This framework directly mirrors numerical physics, where partial differential equations are solved by establishing discrete grids over space and time. The finer the discretization grid, the lower the numerical error relative to the true continuous process. 
-
-In deep learning, **network width and depth take the exact mathematical place of space and time**. Other finite knobs—such as step size, batch size, and dataset capacity—behave as equivalent discretization constraints. Finite-size corrections typically worsen performance while saving engineering constraints in data, time, memory, and compute. Showing a generalized, algorithmic benefit delivered uniquely by finite-size boundaries would successfully falsify this hypothesis.
+* **Hanin & Nica [2019]** — *Finite depth and width corrections to the neural tangent kernel* 
+* **Li et al. [2022]** — *The neural covariance sde: Shaped infinite depth-and-width networks at initialization* 
+* **Noci et al. [2023]** — *The shaped transformer: Attention models in the infinite depth-and-width limit* 
+* **Hanin & Tianze Jiang [2025]** — *Global universality of singular values in products of many large random matrices* 
+* **Mandt et al. [2017]** — *Stochastic gradient descent as approximate bayesian inference* 
+* **Jastrzebski et al. [2017]** — *Three factors influencing minima in sgd* 
+* **Daniel A Roberts et al. [2022]** — *The principles of deep learning theory* 
+* **Jacob Zavatone-Veth et al. [2021]** — *Asymptotics of representation learning in finite bayesian neural networks* 
+* **Segadlo et al. [2022]** — *Unified field theoretical approach to deep and recurrent neuronal networks* 
+* **Bordelon & Pehlevan [2023]** — *Dynamics of finite width kernel and prediction fluctuations in mean field neural networks* 
+* **Glasgow et al. [2025]** — *Propagation of chaos in one-hidden-layer neural networks beyond logarithmic time* 

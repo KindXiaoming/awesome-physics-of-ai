@@ -4,72 +4,57 @@
 >
 > Deep learning is an extraordinarily measurable field. While tracking individual microscopic weights during training is nearly impossible, coarse properties of the system frequently obey simple, mathematically rigorous empirical laws. This paradigm closely mirrors the evolution of the quantitative physical sciences, where macroscopic regularities (such as the laws of Kepler, Boyle, Hooke, Newton, and Planck) were discovered and utilized long before their deep microscopic mechanisms were fully resolved.
 
----
 
-## 📈 A. Neural Scaling Laws
+## A. Neural Scaling Laws
+*Focuses on power-law behaviors where aggregate macroscopic statistics—most notably the final test loss—decay predictably based on computation compute ($C$), dataset tokens ($D$), and parameter count ($N$).* 
 
-The test loss represents the foundational macroscale metric of any machine learning system. Despite the extreme complexity of modern overparameterized models, the final achieved test loss decays predictably according to precise power laws. Within a given architectural family, this macroscopic statistic is governed cleanly by only three scalar variables: **compute** ($C$), **dataset size** ($D$), and **parameter count** ($N$).
-
-$$L(C) \approx \left(\frac{C_{\min}}{C_0}\right)^{-\alpha_C}, \quad L(D) \approx \left(\frac{D}{D_0}\right)^{-\alpha_D}, \quad L(N) \approx \left(\frac{N}{N_0}\right)^{-\alpha_N}$$
-
-### Theoretical Frontiers
-* **The Exponents**: While scaling laws are robustly observable across diverse model horizons, predicting the exact scaling exponents ($\alpha_C, \alpha_D, \alpha_N$) *a priori* from architectural or dataset properties remains an open challenge. 
-* **Candidate Hypotheses**: Current explanations attribute these power laws to latent data manifold dimensionality , internal feature superposition mechanisms , and hierarchical power laws embedded directly within task structures.
-* **Key Literature**: 
-  * *Hestness et al. [2017]* — Early empirical validation of predictable deep learning scaling.
-  * *Kaplan et al. [2020]* — *Scaling laws for neural language models*.
-  * *Sharma & Kaplan [2022] / Bahri et al. [2024]* — Investigating scaling mechanics relative to data manifold dimension.
-
----
-
-## ⚡ B. Weight Dynamics at the Edge of Stability
-
-The trajectory of a network's weights is strictly dictated by its high-dimensional loss landscape. To analyze this trajectory macroscopically, theorists track the **sharpness** of the loss surface, formally defined as the largest eigenvalue of the Hessian matrix with respect to the network parameters.
-
-When a network undergoes optimization via full-batch gradient descent with a learning rate $\eta$, the sharpness exhibits a universal, non-convex phenomenon:
-
-1. **Progressive Sharpening**: Early in training, the loss sharpness undergoes a steady, gradual increase.
-2. **Self-Stabilization (The Edge of Stability)**: The sharpness eventually plateaus and hovers dynamically at or just above the maximum theoretical stability threshold:
-
-$$\lambda_{\max}(\text{Hessian}) \approx \frac{2}{\eta}$$
-
-### Theoretical Frontiers
-* **Mechanistic Causes**: In traditional convex optimization, exceeding a sharpness of $2/\eta$ triggers catastrophic divergence. In deep learning, third-order loss curvature interactions counteract this explosion, allowing the parameter trajectory to decompose into smooth, time-averaged gradient flow dynamics coupled with stable oscillations in unstable directions.
-* **Key Literature**:
-  * *Cohen et al. [2021a]* — *Gradient descent on neural networks typically occurs at the edge of stability*.
-  * *Damian et al. [2022a]* — Proves how third-order loss curvatures self-stabilize sharpness at the threshold.
-  * *Even et al. [2023] / Cohen et al. [2025]* — Exact formulations of edge-of-stability mechanics and continuous central flows.
+* **Kaplan et al. [2020]** — *Scaling laws for neural language models* 
+* **Hestness et al. [2017]** — *Deep learning scaling is predictable, empirically* 
+* **Sharma & Kaplan [2022]** — *Scaling laws from the data manifold dimension* 
+* **Bahri et al. [2024]** — *Explaining neural scaling laws* 
+* **Liu et al. [2025]** — *Superposition yields robust neural scaling* 
+* **Cui et al. [2021]** — *Generalization error rates in kernel regression: The crossover from the noiseless to noisy regime* 
+* **Bordelon et al. [2024a]** — *A dynamical model of neural scaling laws* 
+* **Michaud et al. [2023]** — *The quantization model of neural scaling* 
+* **Ren et al. [2025]** — *Emergence and scaling laws in sgd learning of shallow neural networks* 
+* **Defilippis et al. [2025]** — *Scaling laws and spectra of shallow neural networks in the feature learning regime* 
+* **Barkeshli et al. [2026]** — *On the origin of neural scaling laws: from random graphs to natural language* 
+* **Cagnetta et al. [2026]** — *Deriving neural scaling laws from the statistics of natural language* 
 
 ---
 
-## 🛑 C. Geometric & Structural Conservation Laws
+## B. Weight Dynamics & The Edge of Stability
+*Focuses on trajectories where the loss landscape's sharpness (the largest eigenvalue of the Hessian) progressive sharpens and self-stabilizes dynamically at the step-size threshold of $2/\eta$.* 
 
-Beyond optimization trajectories, structural statistics of hidden representations and parameter matrices settle into mathematically elegant, highly predictable configurations at the end of training.
+* **Cohen et al. [2021a]** — *Gradient descent on neural networks typically occurs at the edge of stability* 
+* **Even et al. [2023]** — *(s) gd over diagonal linear networks: Implicit bias, large stepsizes and edge of stability* 
+* **Yoo et al. [2025]** — *Understanding sharpness dynamics in nn training with a minimalist example: The effects of dataset difficulty, depth, stochasticity, and more* 
+* **Damian et al. [2022a]** — *Self-stabilization: The implicit bias of gradient descent at the edge of stability* 
+* **Cohen et nala. [2025]** — *Understanding optimization in deep learning with central flows* 
 
-### 🔷 1. Neural Collapse
-During the terminal phase of training a deep classifier under cross-entropy loss and explicit weight decay, the final hidden layer representations of intra-class samples exhibit a complete geometric collapse:
-* Activations of individual samples cluster tightly around their specific class mean.
-* The resulting class mean vectors self-assemble into a perfect, equidistant **regular simplex** in activation space, optimizing the global energy configuration.
-* **Key Literature**: *Papyan, Han, & Donoho [2020]* — First empirical isolation of the neural collapse phenomenon.
+---
 
-### 🌐 2. The Neural Feature Ansatz
-At the initial layers of a trained network, the coarse geometric layout of the weights reflects a direct statistical mapping of the target function. The Gram matrix of the first-layer weights ($W_1^\top W_1$) heuristically aligns with the average gradient outer product (AGOP) of the model over the data distribution:
+## C. Geometric Regularities (Neural Collapse & Feature Ansatz)
+*Focuses on terminal phase geometric constants where hidden layers collapse into low-energy configurations and initial weight layers mirror data gradient profiles.* 
 
-$$W_1^\top W_1 \propto \mathbb{E}_{x \sim \mathcal{P}_{\text{data}}} \left[ \nabla_x f(x;\theta) \nabla_x f(x;\theta)^\top \right]$$
+* **Papyan et al. [2020]** — *Prevalence of neural collapse during the terminal phase of deep learning training* 
+* **Zhu et al. [2021]** — *A geometric analysis of neural collapse with unconstrained features* 
+* **Soudry et al. [2018b]** — *The implicit bias of gradient descent on separable data* 
+* **Radhakrishnan et al. [2024]** — *Mechanism for feature learning in neural networks and backpropagation-free machine learning models* 
+* **Ziyin et al. [2024]** — *Formation of representations in neural networks* 
+* **Boix-Adserà et al. [2025]** — *The features at convergence theorem: a first-principles alternative to the neural feature ansatz for how networks learn representations* 
 
-This powerful structural ansatz allows precise macroscopic predictions regarding the top eigenvectors of trained weight matrices.
-* **Key Literature**: *Radhakrishnan et al. [2024]* — *Mechanism for feature learning in neural networks and backpropagation-free machine learning models*.
+---
 
-### 🪐 3. Noether Symmetries & Conservation Laws
-In deep linear networks, the difference between the covariance and Gram matrices of consecutive layers is strictly conserved during gradient updates:
+## D. Noether Symmetries & Gradient Flow Conservation Laws
+*Leverages the Noether principle from physics to identify continuous parameterization symmetries—such as rescaling, translation, and rotation—that dictate strict parameter invariants.* 
 
-$$\frac{d}{dt} \left( W_l W_l^\top - W_{l+1}^\top W_{l+1} \right) = 0$$
+* **Saxe et al. [2014]** — *Exact solutions to the nonlinear dynamics of learning in deep linear neural networks* 
+* **Du et al. [2018]** — *Algorithmic regularization in learning deep homogeneous models: Layers are automatically balanced* 
+* **Arora et al. [2019a]** — *A convergence analysis of gradient descent for deep linear neural networks* 
+* **Kunin et al. [2021]** — *Neural mechanics: Symmetry and broken conservation laws in deep learning dynamics* 
+* **Tanaka & Kunin [2021]** — *Noether's learning dynamics: Role of symmetry breaking in neural networks* 
+* **Marcotte et al. [2024a]** — *Abide by the law and follow the flow: Conservation laws for gradient flows* 
+* **Marcotte et al. [2024b]** — *Keep the momentum: Conservation laws beyond euclidean gradient flows* l. [2021]* — *Neural mechanics: Symmetry and broken conservation laws in deep learning dynamics*.
 
-By mapping this curiosity to the **Noether Principle** from classical mechanics, theorists proved that this structural regularity follows directly from continuous parameterization symmetries. This framework maps specific architectural invariants to predictable macroscopic statistics across modern architectures:
-* **ReLU activations** yield explicit rescaling symmetries.
-* **Normalization layers** introduce strict scale balancing invariants.
-* **Softmax operators** dictate explicit logit translation symmetries.
-* **Attention mechanisms** enforce rigorous rotation conservation laws between Key and Query matrices.
-* **Key Literature**: 
-  * *Du et al. [2018]* — Proves algorithmic balancing across layers in homogeneous networks.
-  * *Kunin et al. [2021]* — *Neural mechanics: Symmetry and broken conservation laws in deep learning dynamics*.
+

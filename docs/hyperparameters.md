@@ -1,66 +1,61 @@
-# 4. Hyperparameter Disentanglement
+# 4. Hyperparameter Disentanglement: Paper List
 
-> "Training a deep learning system involves many numerical knobs, termed 'hyperparameters.' ... It is only in the last few years that the theory community has come to realize that hyperparameters can be disentangled and understood, and that the resulting mathematics is often both useful for practitioners and clarifying for theorists." 
+> "Optimization hyperparameters in deep learning affect not just the speed and cost of training but also the trajectory that training follows. This in turn affects various properties of the learned network... the theory community has come to realize that hyperparameters can be disentangled and understood."
 
----
+## A. Optimization Hyperparameters & SDE Dynamics
+*Focuses on algorithm-level invariances under simultaneous rescaling of step sizes and batch capacities, analyzing stochastic updates as approximations of continuous Stochastic Differential Equations (SDEs).*
 
-### 🌊 The Physics Precedent: Fluid Dynamics & Dimensionless Constants
-The mathematical study of deep learning hyperparameters bears profound similarities to the constant parameters governing physical dynamical systems. For instance, in fluid dynamics, a dimensionless constant called the **Reynolds number**—computed from pipe diameter, fluid speed, density, and viscosity—determines whether fluid flow will be orderly (laminar) or turbulent. While solving the exact microscopic trajectory of a turbulent fluid is incredibly difficult, predicting whether the flow will be turbulent or how the system shifts when scaling up system parameters is highly practical. Analogously, while solving the exact optimization dynamics of a neural network is mathematically challenging, learning mechanics strives to provide a coarse, predictive picture of how training behaviors alter when shifting numerical knobs.
-
----
-
-## 🎛️ A. Understanding Optimization Hyperparameters
-
-Stochastic gradient descent relies heavily on two primary numerical knobs: **learning rate** and **batch size**. Learning mechanics systematically models how these parameters control both optimization velocity and the structural properties of the learned network.
-
-### 🌡️ 1. The Linear Scaling Rule & Noise Temperature
-* **The Invariance Principle**: Under stochastic gradient descent, optimization dynamics exhibit an algorithm-level invariance under a simultaneous rescaling of step size and batch capacity. If a practitioner doubles both the learning rate and the batch size while halving the total optimizer steps (keeping the total number of training examples processed fixed), the network's optimization trajectory remains nearly identical. 
-* **SDE Modeling**: This empirical rule of thumb is formally clarified by interpreting SGD as a discrete numerical approximation of an underlying continuous **Stochastic Differential Equation (SDE)**. The SDE perspective proves that the effective "noise temperature" of stochastic training is directly modulated by the ratio of the learning rate to the batch size. For modern adaptive optimizers, this scaling relationship shifts, dictating that the learning rate should instead scale with the square root of the batch size.
-* **Key Literature**:
-  * *Goyal et al. [2017]* — Empirical proof of the linear scaling rule for large mini-batch training.
-  * *Mandt et al. [2017] / Jastrzebski et al. [2017]* — Interrogating stochastic gradient descent as approximate Bayesian inference via continuous SDEs.
-  * *Malladi et al. [2022]* — Deriving continuous SDE bounds and alternative scaling rules for adaptive gradient algorithms.
-
-### 📉 2. Resource Tradeoffs & The Critical Batch Size
-* **The Pareto Frontier**: Selecting an optimal batch size requires balancing an inherent engineering tradeoff between two distinct resources: serial time (sequential execution steps) and overall compute (total computation cost). Minimizing serial time exclusively pushes the ideal batch size to the full dataset, whereas minimizing computation cost exclusively drives the ideal batch size down to 1.
-* **The Critical Threshold**: In reality, practitioners accept an optimization compromise quantified by the **critical batch size**. Simple statistical frameworks model this resource frontier as a clean mathematical hyperbola, allowing teams to isolate the exact batch size that optimally negotiates the time-compute tradeoff.
-* **Key Literature**: *McCandlish et al. [2018]* — Deriving and empirically validating a predictive model for large-batch training and critical batch capacity.
-
-### 🪐 3. Curvature-Penalized Flows
-* **Implicit Regularization**: Beyond optimization speed, optimization hyperparameters fundamentally dictate the geometric landscape that a network's weights follow. Operating with larger learning rates and smaller batch sizes structurally regularizes the **sharpness (loss function curvature)** along the parameter path, steering networks toward flatter, more compressible, and better-generalizing local minima.
-* **Effective Flow Formulations**: By Taylor-expanding the network objective function to the third order, theorists discovered that high-frequency optimization oscillations mathematically act as an implicit deterministic drift. Consequently, discrete, unstable optimization trajectories on realistic neural networks can be cleanly modeled as a smooth continuous **curvature-penalized gradient flow**, where hyperparameters simply modulate the intensity and form of the curvature penalty.
-* **Key Literature**:
-  * *Keskar et al. [2016]* — Early empirical isolation of the generalization gap and sharp vs. flat minima boundaries.
-  * *Blanc et al. [2020] / Damian et al. [2021]* — Proving curvature regularization driven by third-order objective expansions.
-  * *Cohen et al. [2025]* — *Understanding optimization in deep learning with central flows*.
+* **Goyal et al. [2017]** — *Accurate, large minibatch sgd: Training imagenet in 1 hour* 
+* **Mandt et al. [2017]** — *Stochastic gradient descent as approximate bayesian inference* 
+* **Jastrzebski et al. [2017]** — *Three factors influencing minima in sgd* 
+* **Chaudhari & Soatto [2018]** — *Stochastic gradient descent performs variational inference, converges to limit cycles for deep networks* 
+* **Li et al. [2019]** — *Stochastic modified equations and dynamics of stochastic gradient algorithms i: Mathematical foundations* 
+* **Li et al. [2021b]** — *On the validity of modeling sgd with stochastic differential equations (sdes)* 
+* **Malladi et al. [2022]** — *On the sdes and scaling rules for adaptive gradient algorithms* 
 
 ---
 
-## 🔲 B. Disentangling Architecture from Optimization: µP
+## B. Resource Tradeoffs & Critical Batch Size
+*Focuses on mapping the Pareto frontier balancing serial execution time against total computation cost, defining the optimal critical batch capacity boundaries.*
 
-A historical roadblock in large-scale deep learning was the entanglement of architectural knobs (such as width and depth) with optimization knobs (such as learning rate and initialization variance). Under standard parameterization practices, expanding a model's width causes its optimal learning rate to shift unpredictably, forcing costly trial-and-error re-tuning at production scales.
+* **McCandlish et al. [2018]** — *An empirical model of large-batch training* 
+* **Ma et al. [2018]** — *The power of interpolation: Understanding the effectiveness of sgd in modern over-parametrized learning* 
+* **Jain et al. [2018]** — *Parallelizing stochastic gradient descent for least squares regression: mini-batching, averaging, and model misspecification* 
+* **Shallue et al. [2019]** — *Measuring the effects of data parallelism on neural network training* 
 
-### 📐 1. The Tensor Programs Framework
-To decouple these dimensions, the **Tensor Programs framework** formalizes structural hyperparameters by writing the learning rate in a width-dependent format:
+---
 
-$$\eta = \eta_0 \cdot \text{[width]}^c$$
+## C. Implicit Curvature Regularization & Penalized Flows
+*Focuses on modeling discrete optimization fluctuations as smooth continuous gradient flows penalized by third-order loss curvature, steering parameters toward flat, compressible local minima.*
 
-This formalization separates a scale-invariant coefficient ($\eta_0$) from a width-dependent factor governed by an explicit exponent ($c$). Asymptotic analyses prove that all non-explosive width parameterizations collapse into one of two structural limits:
-1. **Neural Tangent Parameterization (NTP)**: A scaling regime where representations and network features remain completely frozen during training (equivalent to the lazy limit).
-2. **Maximal Update Parameterization (µP)**: A stable, alternative scaling regime where network features actively evolve, and hidden representations preserve a non-trivial dynamical flow at the infinite-width limit.
+* **Cohen et al. [2025]** — *Understanding optimization in deep learning with central flows* 
+* **Keskar et al. [2016]** — *On large-batch training for deep learning: Generalization gap and sharp minima* 
+* **Jastrzebski et al. [2020]** — *The break-even point on optimization trajectories of deep neural networks* 
+* **Cohen et al. [2021a]** — *Gradient descent on neural networks typically occurs at the edge of stability* 
+* **Blanc et al. [2020]** — *Implicit regularization for deep neural networks driven by an ornstein-uhlenbeck like process* 
+* **Li et al. [2021c]** — *What happens after sgd reaches zero loss?-a mathematical framework* 
+* **Damian et al. [2021]** — *Label noise sgd provably prefers flat global minimizers* 
+* **Wen et al. [2022]** — *How does sharpness-aware minimization minimize sharpness?* 
+* **Li et al. [2025]** — *Adam reduces a unique form of sharpness: Theoretical insights near the minimizer manifold* 
+* **Pesme et al. [2021]** — *Implicit bias of sgd for diagonal linear networks: a provable benefit of stochasticity* 
+* **Chen et al. [2024]** — *Stochastic collapse: How gradient noise attracts sgd dynamics towards simpler subnetworks* 
+* **Barrett & Dherin [2020]** — *Implicit gradient regularization* 
+* **Smith et al. [2021]** — *On the origin of implicit regularization in stochastic gradient descent* 
+* **Schulman & Lab [2025]** — *Lora without regret* 
+* **Catalan-Tatjer et al. [2025]** — *Training dynamics impact post-training quantization robustness* 
+* **Barsbey et al. [2025]** — *Large learning rates simultaneously achieve robustness to spurious correlations and compressibility* 
 
-### 🚀 2. Zero-Shot Hyperparameter Transfer
-Because µP guarantees structural parameter invariance across varying dimensions, it unlocks **zero-shot hyperparameter transfer**. Engineers can cheaply map the optimal learning rate, initialization scale, and schedule coordinates on a small, narrow proxy model, and transfer those exact coordinates directly to a massive, production-scale network where they remain near-optimal.
-[ Small Proxy Model ]  ───(Tune Optimal Hyperparameters Cheaply)───┐
-▼  (Zero-Shot Transfer via µP)
-[ Massive Target Model ] ◄───(Apply Invariant Parameter Scalings)───┘
+---
 
-### 🛰️ 3. Extensions to Depth and Modalities
-While original µP frameworks evaluated infinite width asymptotically, recent structural bounds prove that a small set of spectral statistics stabilizes rapidly across finite widths, explaining its real-world accuracy. This scaling-centric paradigm has been successfully generalized across alternative structural coordinates:
-* **Depth Scaling**: Standardizing invariant parameter transfer down deep residual blocks.
-* **Transformers**: Designing compute-efficient, shaped transformer representations.
-* **Mixture-of-Experts (MoE)**: Scaling parameter bounds across expert counts and expert routing widths.
-* **Key Literature**:
-  * *Yang & Hu [2021]* — *Tensor programs IV: Feature learning in infinite-width neural networks*.
-  * *Yang et al. [2022]* — *Tensor programs V: Tuning large neural networks via zero-shot hyperparameter transfer*.
-  * *Bordelon et al. [2023] / Yang et al. [2023b]* — Extending invariant hyperparameter transfer to infinite-depth networks.
+## D. Architecture Scaling & Invariant Hyperparameter Transfer
+*Focuses on disentangling dimensional coordinates (width, depth) from optimization variables to execute zero-shot hyperparameter predictions across scales.*
+
+* **Yang & Hu [2021]** — *Tensor programs iv: Feature learning in infinite-width neural networks* 
+* **Yang & Littwin [2023]** — *Tensor programs ivb: Adaptive optimization in the infinite-width limit* 
+* **Yang et al. [2022]** — *Tensor programs v: Tuning large neural networks via zero-shot hyperparameter transfer* 
+* **Noci et al. [2024]** — *Super consistency of neural network landscapes and learning rate transfer* 
+* **Ghosh et al. [2025]** — *Understanding the mechanisms of fast hyperparameter transfer* 
+* **Hayou [2025]** — *A proof of learning rate transfer under mu p* 
+* **Yang et al. [2023b]** — *Tensor programs vi: Feature learning in infinite-depth neural networks* 
+* **Bordelon et al. [2023]** — *Depthwise hyperparameter transfer in residual networks: Dynamics and scaling limit* 
+* **Dey et al. [2025]** — *Don't be lazy: Completep enables compute-efficient deep transformers* 
