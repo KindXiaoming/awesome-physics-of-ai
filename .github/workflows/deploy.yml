@@ -1,0 +1,51 @@
+name: Deploy VitePress site to Pages
+
+on:
+  # 当你向 main 分支推送代码时触发（如果是 master 分支，请把 main 改为 master）
+  push:
+    branches: [main]
+
+# 设置 GitHub Actions 的权限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 确保同时只有一个部署任务在运行
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci || npm install # 兼容没有 lock 文件的情况
+
+      - name: Build with VitePress
+        run: npm run docs:build # 触发你刚刚改好的 package.json 里的打包命令
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # 🌟 注意：因为移到了 docs 内部，这里必须是 docs/.vitepress/dist
+          path: docs/.vitepress/dist
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
