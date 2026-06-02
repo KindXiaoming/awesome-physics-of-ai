@@ -25,8 +25,8 @@
 
 ---
 
-## C. Implicit Curvature Regularization & Penalized Flows
-*Focuses on modeling discrete optimization fluctuations as smooth continuous gradient flows penalized by third-order loss curvature, steering parameters toward flat, compressible local minima.*
+## C. Implicit Regularization & Penalized Flows
+*Focuses on the implicit regularization effect of SGD or optimization dynamic, steering parameters toward flat, close and compressible local minima.*
 
 * **Cohen et al. [2025]** — *Understanding optimization in deep learning with central flows* 
 * **Keskar et al. [2016]** — *On large-batch training for deep learning: Generalization gap and sharp minima* 
@@ -44,6 +44,7 @@
 * **Schulman & Lab [2025]** — *Lora without regret* 
 * **Catalan-Tatjer et al. [2025]** — *Training dynamics impact post-training quantization robustness* 
 * **Barsbey et al. [2025]** — *Large learning rates simultaneously achieve robustness to spurious correlations and compressibility* 
+* **Chen et al. [2026]** — *Nexus: Same Pretraining Loss, Better Downstream Generalization via Common Minima*
 
 ---
 

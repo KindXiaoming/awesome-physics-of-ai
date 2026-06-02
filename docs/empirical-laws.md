@@ -24,13 +24,15 @@
 ---
 
 ## B. Weight Dynamics & The Edge of Stability
-*Focuses on trajectories where the loss landscape's sharpness (the largest eigenvalue of the Hessian) progressive sharpens and self-stabilizes dynamically at the step-size threshold of $2/\eta$.* 
+*Focuses on trajectories where the loss landscape's sharpness (the largest eigenvalue of the Hessian) progressive sharpens and self-stabilizes dynamically at the step-size threshold of $2/\eta$, extending to advanced sharpness-regularized dynamics and non-convex pretraining landscapes.*
 
-* **Cohen et al. [2021a]** — *Gradient descent on neural networks typically occurs at the edge of stability* 
-* **Even et al. [2023]** — *(s) gd over diagonal linear networks: Implicit bias, large stepsizes and edge of stability* 
-* **Yoo et al. [2025]** — *Understanding sharpness dynamics in nn training with a minimalist example: The effects of dataset difficulty, depth, stochasticity, and more* 
-* **Damian et al. [2022a]** — *Self-stabilization: The implicit bias of gradient descent at the edge of stability* 
-* **Cohen et nala. [2025]** — *Understanding optimization in deep learning with central flows* 
+* **Cohen et al. [2021a]** — *Gradient descent on neural networks typically occurs at the edge of stability*
+* **Even et al. [2023]** — *(s) gd over diagonal linear networks: Implicit bias, large stepsizes and edge of stability*
+* **Wen et al. [2023]** — *How does sharpness-aware minimization minimize sharpness?*
+* **Wen et al. [2024]** — *Understanding warmup-stable-decay learning rates: A river valley loss landscape perspective*
+* **Damian et al. [2022a]** — *Self-stabilization: The implicit bias of gradient descent at the edge of stability*
+* **Yoo et al. [2025]** — *Understanding sharpness dynamics in nn training with a minimalist example: The effects of dataset difficulty, depth, stochasticity, and more*
+* **Cohen et al. [2025]** — *Understanding optimization in deep learning with central flows*
 
 ---
 
