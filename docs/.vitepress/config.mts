@@ -14,7 +14,8 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Pillars', link: '/solvable-settings' }
+      { text: 'Pillars', link: '/solvable-settings' },
+      { text: 'Recent Papers', link: '/recent-papers' }
     ],
 
     sidebar: [

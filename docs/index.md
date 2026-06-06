@@ -12,6 +12,9 @@ hero:
     - theme: alt
       text: View on GitHub
       link: https://github.com/huanranchen/awesome-physics-of-ai
+    - theme: alt
+      text: Recent Papers
+      link: /recent-papers
 
 features:
   - title: 1. Solvable Idealized Settings
